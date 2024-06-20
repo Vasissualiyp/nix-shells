@@ -8,18 +8,18 @@ let
       url = "https://files.pythonhosted.org/packages/ef/51/e5a49cee59c8632723a18f7b1a5f2d431825f589b12f6d61891ba020d8fb/pix2tex-0.1.2-py3-none-any.whl";
       sha256 = "sha256-3GRHxaijpW/I0NT3XKqI9GVsuGuI1qcVpE9gAFUv8Jc=";
     };
-	nativeBuildInputs = [ pkgs.curl ];
 
+	# Now need to download the weights
     weights = pkgs.fetchurl {
       url = "https://github.com/lukas-blecher/LaTeX-OCR/releases/download/v0.0.1/weights.pth";
       sha256 = "sha256-pj2RQcU9Jmy2gvtai9g71cvigxReDnjr3A+JUZWh36o=";
     };
-
     resizer = pkgs.fetchurl {
       url = "https://github.com/lukas-blecher/LaTeX-OCR/releases/download/v0.0.1/image_resizer.pth";
       sha256 = "sha256-HDggZZmFrRQrUmSQuyXCPZdxdqwgc1kbO92tppJxhFg=";
     };
 
+	# Now need to symlink the weights so that they can be used
 	postInstall = ''
 	  echo "***********************************"
 	  echo "***** Installed successfully! *****"
