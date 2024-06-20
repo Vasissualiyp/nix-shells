@@ -27,6 +27,8 @@ let
 	  echo "***** Installed successfully! *****"
 	  echo "***** Downloading the weights *****"
 	  echo "***********************************"
+      echo "Creating the static/ directory..."
+      mkdir -p $out/lib/python3.11/site-packages/pix2text/static
 	  '';
       #checkpoint_dir=$out/lib/python3.11/site-packages/pix2text/model/checkpoints
       #mkdir -p $checkpoint_dir
@@ -76,6 +78,40 @@ let
 	  url = "https://files.pythonhosted.org/packages/7e/28/27f27d66eb82f24e6595deb26c0a875e62431878c416e38eac515023abb2/fitz-0.0.1.dev2-py2.py3-none-any.whl";
       sha256 = "sha256-O3UIPVgGjZvVFpXrL3jJySCUzWyNrag56T7c3fGMDFw=";
     };
+	buildInputs = [
+      pkgs.python311Packages.ipython
+	  pkgs.python311Packages.numpy
+	  pkgs.python311Packages.scipy
+	  pkgs.python311Packages.matplotlib
+	  pkgs.python311Packages.pandas
+	  pkgs.python311Packages.nibabel
+	  pkgs.python311Packages.nipype
+	  pkgs.python311Packages.pyxnat
+	  pkgs.python311Packages.httplib2
+	];
+  };
+  fitz_src = pkgs.python311Packages.buildPythonPackage rec {
+    pname = "fitz";
+    version = "0.0.1.dev2"; # We use an older version, as required by the package
+	format = "pyproject";
+    src = pkgs.fetchFromGitHub {
+      owner = "kastman";
+      repo = "fitz";
+      rev = "70896def859886bbaa42c67bba3634b92282d2fd";
+      hash = "sha256-/5G26FdrSaz9Y3oqcsCGCYDq9wzGxS47mp7XH7CsCUA=";
+    };
+	buildInputs = [
+      pkgs.python311Packages.setuptools
+      pkgs.python311Packages.ipython
+	  pkgs.python311Packages.numpy
+	  pkgs.python311Packages.scipy
+	  pkgs.python311Packages.matplotlib
+	  pkgs.python311Packages.pandas
+	  pkgs.python311Packages.nibabel
+	  pkgs.python311Packages.nipype
+	  pkgs.python311Packages.pyxnat
+	  pkgs.python311Packages.httplib2
+	];
   };
 
   # Prerequisite for pix2text, not packaged in nixpkgs
@@ -116,19 +152,26 @@ in
      pkgs.python311Packages.onnx
      pkgs.python311Packages.psutil
      pkgs.python311Packages.pyspellchecker
+     pkgs.python311Packages.pymupdf
+     pkgs.python311Packages.fastapi
+     pkgs.python311Packages.python-multipart
+
+     frontend
      pkgs.python311Packages.starlette
      pkgs.python311Packages.uvicorn
      pkgs.python311Packages.itsdangerous
-     frontend
-     fitz
+
+     pkgs.python311Packages.pydantic
+
      ultralytics
+
      cnocr
 	 cnstd
 
 	 pix2text
     ];
 	shellHook = ''
-	p2t
+	p2t serve
 	exit
 	'';
   }
