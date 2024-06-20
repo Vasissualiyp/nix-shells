@@ -155,13 +155,13 @@ in
      pkgs.python311Packages.pymupdf
      pkgs.python311Packages.fastapi
      pkgs.python311Packages.python-multipart
+     pkgs.python311Packages.pydantic
+     pkgs.python311Packages.py-cpuinfo
 
      frontend
      pkgs.python311Packages.starlette
      pkgs.python311Packages.uvicorn
      pkgs.python311Packages.itsdangerous
-
-     pkgs.python311Packages.pydantic
 
      ultralytics
 
@@ -171,7 +171,5 @@ in
 	 pix2text
     ];
 	shellHook = ''
-	p2t serve
-	exit
 	'';
   }
