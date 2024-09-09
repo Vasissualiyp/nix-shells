@@ -8,15 +8,20 @@ let
       owner = "cmbant";
       repo = "CAMB";
       rev = "ecd375bff3cd736b3590a22c8f9663b9e6180ee2";
-      hash = "sha256-e1sBwaCMLVcXrFdoDdANoRezlUBYnnKjjkuGvDkw/t8=";
+      hash = "sha256-rHUY2S+MDXk/qujlCmC2CS3i6i9SOBtf3sBukEDFdBI=";
+	  fetchSubmodules = true;
     };
 
-	buildInputs = [ forutils pkgs.which ];
-	propagatedBuildInputs = [ packaging pkgs.gfortran forutils ];
-	nativeBuildInputs = [ packaging pkgs.gfortran forutils ];
+	buildInputs = [ pkgs.which pkgs.gfortran ];
+	propagatedBuildInputs = [ packaging pkgs.gfortran ];
+	nativeBuildInputs = [ packaging pkgs.gfortran pkgs.which pkgs.python311Packages.setuptools pkgs.python311Packages.wheel ];
     buildPhase = ''
-      export FORUTILSPATH=${forutils}/Release
 	  python setup.py build
+    '';
+	# Custom install phase to copy the built files manually
+    installPhase = ''
+      mkdir -p $out/lib/python3.11/site-packages
+      cp -r build/lib*/* $out/lib/python3.11/site-packages/
     '';
 	postInstall = ''
 	'';
@@ -63,12 +68,12 @@ let
 
 in
   pkgs.mkShell {
-    buildInputs = with pkgs.python311Packages; [
-     pkgs.python311
+    buildInputs = with pkgs; [
+     python311
 
-     numpy
-     scipy
-     sympy
+     python311Packages.numpy
+     python311Packages.scipy
+     python311Packages.sympy
      #pkgs.python311Packages.packaging
      #packaging
 
