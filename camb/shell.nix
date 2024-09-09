@@ -11,40 +11,40 @@ let
       hash = "sha256-e1sBwaCMLVcXrFdoDdANoRezlUBYnnKjjkuGvDkw/t8=";
     };
 
-	buildInputs = [ forutils ];
+	buildInputs = [ forutils pkgs.which ];
 	propagatedBuildInputs = [ packaging pkgs.gfortran forutils ];
 	nativeBuildInputs = [ packaging pkgs.gfortran forutils ];
+    buildPhase = ''
+      export FORUTILSPATH=${forutils}/Release
+	  python setup.py build
+    '';
 	postInstall = ''
 	'';
   };
 
-forutils = pkgs.stdenv.mkDerivation {
-  pname = "forutils";
-  version = "1.0";
-  src = pkgs.fetchFromGitHub {
-    owner = "cmbant";
-    repo = "forutils";
-    rev = "37c073b4768e7e6851c6fcb498ed5b9ad85765d8";
-    hash = "sha256-e1sBwaCMLVcXrFdoDdANoRezlUBYnnKjjkuGvDkw/t8="; # Replace this with the actual hash after fetching
+  forutils = pkgs.stdenv.mkDerivation {
+    pname = "forutils";
+    version = "1.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "cmbant";
+      repo = "forutils";
+      rev = "e046cdfcf8670eeb8f2fd755184f1225fd819787";
+      hash = "sha256-/5LJFL7KYh6axJGuEY51SljHk1I3q7HIYOPIz4eRRdw=";
+    };
+  
+    buildInputs = [ pkgs.gfortran ];
+  
+    buildPhase = ''
+    '';
+  
+    installPhase = ''
+      mkdir -p $out
+      cp -r Release $out/
+      cp -r Debug $out/
+    '';
+  
   };
 
-  buildInputs = [ pkgs.gfortran ];
-
-  buildPhase = ''
-  '';
-
-  installPhase = ''
-    #mkdir -p $out/bin
-    cp -r libforutils.a $out/bin
-    echo "Forutils installed in $out/bin"
-  '';
-
-  meta = with pkgs.lib; {
-    description = "Fortran utility programs required by CAMB";
-    license = licenses.mit;
-    platforms = platforms.linux;
-  };
-};
   packaging = pkgs.python311Packages.buildPythonPackage rec {
 	pname = "packaging";
 	version = "24.1";
