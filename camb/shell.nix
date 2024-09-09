@@ -15,6 +15,7 @@ let
 	buildInputs = [ pkgs.which pkgs.gfortran ];
 	propagatedBuildInputs = [ packaging pkgs.gfortran ];
 	nativeBuildInputs = [ packaging pkgs.gfortran pkgs.which pkgs.python311Packages.setuptools pkgs.python311Packages.wheel ];
+	format = "other";
     buildPhase = ''
 	  python setup.py build
     '';
@@ -23,6 +24,7 @@ let
       mkdir -p $out/lib/python3.11/site-packages
       cp -r build/lib*/* $out/lib/python3.11/site-packages/
     '';
+	preDistPhases = [ "buildPhase" "installPhase" ];
 	postInstall = ''
 	'';
   };
