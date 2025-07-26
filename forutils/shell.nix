@@ -23,11 +23,31 @@ let
     '';
   
   };
+  packaging = pkgs.python311Packages.buildPythonPackage rec {
+    pname = "packaging";
+    version = "24.1";
+    format = "pyproject";
+    src = pkgs.fetchFromGitHub {
+      owner = "pypa";
+      repo = "packaging";
+      rev = "a716c52b5f3ca9b4a512f538b80ced8ee01b2775";
+      hash = "sha256-5ay2MwEw90yc0K3PvyEaxsChX83aJ60jL1rY6q55B2Y=";
+    };
+
+    buildInputs = with pkgs.python311Packages; [ pyproject-api flit-core ];
+    postInstall = ''
+    '';
+  };
 
 in
   pkgs.mkShell {
-    buildInputs = [
+    buildInputs = with pkgs; [
      forutils
+	 python311
+	 python311Packages.setuptools
+	 python311Packages.wheel
+	 packaging
+	 pkgs.gfortran
     ];
 	shellHook = ''
 	FORUTILSPATH=${forutils}/Release
